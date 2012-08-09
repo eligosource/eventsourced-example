@@ -1,0 +1,1 @@
+This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library.
