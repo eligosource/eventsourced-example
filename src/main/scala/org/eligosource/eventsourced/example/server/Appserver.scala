@@ -23,7 +23,7 @@ object Appserver {
     val invoiceComponent = Component(1, journal)
     val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
 
-    invoiceComponent.setProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
+    invoiceComponent.addProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
     invoiceComponent.init()
   }
 }
