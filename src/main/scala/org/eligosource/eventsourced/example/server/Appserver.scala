@@ -10,6 +10,7 @@ import org.eligosource.eventsourced.example.service._
 
 trait Appserver {
   val invoiceService: InvoiceService
+  val statisticsService: StatisticsService
 }
 
 object Appserver {
@@ -20,10 +21,18 @@ object Appserver {
     val journal = system.actorOf(Props(new Journal(journalDir)))
 
     val invoicesRef = Ref(Map.empty[String, Invoice])
-    val invoiceComponent = Component(1, journal)
-    val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
+    val statisticsRef = Ref(Map.empty[String, Int])
 
-    invoiceComponent.addProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
-    invoiceComponent.init()
+    val listenersComponent = Component(2, journal)
+      .setProcessor(outputChannels => system.actorOf(Props(new StatisticsProcessor(statisticsRef))))
+
+    val invoiceComponent = Component(1, journal)
+      .addDefaultOutputChannelToComponent("listeners", listenersComponent)
+      .setProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
+
+    Composite.init(invoiceComponent)
+
+    val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
+    val statisticsService = new StatisticsService(statisticsRef)
   }
 }

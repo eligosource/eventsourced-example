@@ -17,16 +17,12 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
           factory-bean="appserverFactory"
           factory-method="boot"/>
 
-    <!-- services -->
-
     <bean id="invoiceService"
           factory-bean="appserver"
           factory-method="invoiceService"/>
 
-    <!-- ... -->
-
-    <!-- read models -->
-
-    <!-- ... -->
+    <bean id="statisticsService"
+          factory-bean="appserver"
+          factory-method="statisticsService"/>
 
 </beans>

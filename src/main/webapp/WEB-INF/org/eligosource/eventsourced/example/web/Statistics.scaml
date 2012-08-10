@@ -1,0 +1,16 @@
+-@ import val it: Statistics
+
+%h1 Statistics
+
+%h2 Invoice Updates
+
+%table
+  %tr
+    %th Invoice
+    %th Update Count
+  - for (invoiceUpdate <- invoiceUpdatesSorted)
+    %tr
+      %td
+        %a{ :href => { "invoice/%s" format invoiceUpdate.invoiceId } } Invoice #{invoiceUpdate.invoiceId}
+      %td
+        = invoiceUpdate.updateCount
