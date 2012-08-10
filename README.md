@@ -1,9 +1,7 @@
 Info
 ----
 
-This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library. *This is currently work in progress. At the moment, only invoice creation and reading works. Stay tuned for more to come soon ...*
-
-
+This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library.
 
 Run
 ---

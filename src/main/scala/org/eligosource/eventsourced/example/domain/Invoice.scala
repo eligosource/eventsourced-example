@@ -51,6 +51,22 @@ sealed abstract class Invoice {
 }
 
 object Invoice {
+  val invalidVersionMessage = "invoice %s: expected version %s doesn't match current version %s"
+
+  def invalidVersion(invoiceId: String, expected: Long, current: Long) =
+    DomainError(invalidVersionMessage format (invoiceId, expected, current))
+
+  def requireVersion[T <: Invoice](invoice: T, expectedVersion: Option[Long]): DomainValidation[T] = {
+    val id = invoice.id
+    val version = invoice.version
+
+    expectedVersion match {
+      case Some(expected) if (version != expected) => invalidVersion(id, expected, version).fail
+      case Some(expected) if (version == expected) => invoice.success
+      case None =>                                    invoice.success
+    }
+  }
+
   def create(id: String): DomainValidation[DraftInvoice] = DraftInvoice(id, version = 0L).success
 }
 
@@ -156,3 +172,7 @@ case class InvoicePaid(invoiceId: String)
 
 // Commands
 case class CreateInvoice(invoiceId: String)
+case class AddInvoiceItem(invoiceId: String, expectedVersion: Option[Long], invoiceItem: InvoiceItem)
+case class SetInvoiceDiscount(invoiceId: String, expectedVersion: Option[Long], discount: BigDecimal)
+case class SendInvoiceTo(invoiceId: String, expectedVersion: Option[Long], to: InvoiceAddress)
+case class PayInvoice(invoiceId: String, expectedVersion: Option[Long], amount: BigDecimal)
