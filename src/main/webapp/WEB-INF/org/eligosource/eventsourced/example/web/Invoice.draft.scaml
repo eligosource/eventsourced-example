@@ -1,0 +1,63 @@
+-@ import val it: InvoiceInfo
+
+%h1 Draft Invoice
+
+- for (errors <- errorsOption)
+  - render(errorPath("Errors.scaml"), Map("errors" -> errors))
+
+- for { invoice <- draftInvoiceOption }
+  - render(webPath("Invoice.scaml"), Map("invoice" -> invoice))
+
+  %h2 Add Item
+
+  %form{ :action => { "/invoice/%s/item" format invoice.id }, :method => "post" }
+    %table
+      %tr
+        %td Description
+        %td
+          %input{ :type => "text", :value => { uncommitted("description") }, :name => "description" }
+      %tr
+        %td Count
+        %td
+          %input{ :type => "text", :value => { uncommitted("count") }, :name => "count" }
+      %tr
+        %td Amount
+        %td
+          %input{ :type => "text", :value => { uncommitted("amount") }, :name => "amount" }
+      %tr
+        %td
+        %td
+          %input{ :type => "hidden", :value => { invoice.version }, :name => "version" }
+      %tr
+        %td
+        %td
+          %input{ :type => "submit", :value => "Add" }
+
+  %h2 Send Invoice
+
+  %form{ :action => { "/invoice/%s" format invoice.id }, :method => "post" }
+    %table
+      %tr
+        %td Name
+        %td
+          %input{ :type => "text", :value => { uncommitted("name") }, :name => "name" }
+      %tr
+        %td Street
+        %td
+          %input{ :type => "text", :value => { uncommitted("street") }, :name => "street" }
+      %tr
+        %td City
+        %td
+          %input{ :type => "text", :value => { uncommitted("city") }, :name => "city" }
+      %tr
+        %td Country
+        %td
+          %input{ :type => "text", :value => { uncommitted("country") }, :name => "country" }
+      %tr
+        %td
+        %td
+          %input{ :type => "hidden", :value => { invoice.version }, :name => "version" }
+      %tr
+        %td
+        %td
+          %input{ :type => "submit", :value => "Send" }

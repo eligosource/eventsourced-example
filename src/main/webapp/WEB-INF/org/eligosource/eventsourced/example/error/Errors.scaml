@@ -1,0 +1,9 @@
+-@ import val errors: org.eligosource.eventsourced.example.domain.DomainError
+
+%h2 Errors
+
+%table
+  - for (error <- errors)
+    %tr
+      %td = error
+

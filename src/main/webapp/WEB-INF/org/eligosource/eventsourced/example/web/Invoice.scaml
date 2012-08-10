@@ -1,0 +1,30 @@
+-@ import val invoice: org.eligosource.eventsourced.example.domain.Invoice
+
+%h2 Invoice Details
+
+%table
+  %tr
+    %td Id:
+    %td = invoice.id
+  %tr
+    %td Version:
+    %td = invoice.version
+  %tr
+    %td Sum:
+    %td = invoice.sum
+  %tr
+    %td Discount:
+    %td = invoice.discount
+
+%h3 Items
+
+%table
+  %tr
+    %th Description
+    %th Count
+    %th Amount
+  - for { item <- invoice.items }
+    %tr
+      %td = item.description
+      %td = item.count
+      %td = item.amount

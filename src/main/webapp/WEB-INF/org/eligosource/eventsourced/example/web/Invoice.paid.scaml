@@ -1,0 +1,8 @@
+-@ import val it: InvoiceInfo
+
+%h1 Paid Invoice
+
+- for { invoice <- paidInvoiceOption }
+  - render(webPath("Invoice.scaml"), Map("invoice" -> invoice))
+  - render(webPath("InvoiceAddress.scaml"), Map("address" -> invoice.address))
+

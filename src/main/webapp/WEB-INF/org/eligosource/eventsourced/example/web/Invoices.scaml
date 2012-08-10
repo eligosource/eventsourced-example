@@ -1,0 +1,37 @@
+-@ import val it: InvoicesInfo
+
+%h1 Invoices
+
+- for (errors <- errorsOption)
+  %h2 Errors
+  %table
+    - for (error <- errors)
+      %tr
+        %td = error
+
+%h2 Existing Invoices
+
+%table
+  %tr
+    %th Invoice
+    %th Status
+    %th Version
+  - for (invoice <- invoicesSorted)
+    %tr
+      %td
+        %a{ :href => { "invoice/%s" format invoice.id } } Invoice #{invoice.id}
+      %td
+        = InvoiceInfo.status(invoice)
+      %td
+        = invoice.version
+
+%h2 New Invoice
+
+%form{ :action => "/invoice", :method => "post" }
+  %table
+    %tr
+      %td Id
+      %td
+        %input{ :type => "text", :value => { uncommitted("id") }, :name => "id" }
+      %td
+        %input{ :type => "submit", :value => "Create" }

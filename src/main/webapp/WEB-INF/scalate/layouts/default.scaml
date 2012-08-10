@@ -1,0 +1,55 @@
+-@ var body: String
+-@ var title : String = "Event-Sourcing Example"
+-@ var footer : String = ""
+-@ var head : String = ""
+
+!!! Basic
+%html(lang="en")
+  %head
+    %meta(http-equiv="Content-Type" content="text/html")
+    %meta(name="author" content="Martin Krasser")
+
+    %title
+      = title
+    !~~ head
+
+    :css
+        body, html {
+            font-family:Arial,Verdana,Helvetica,sans-serif;
+            color: #666666;
+        }
+        body, html, tbody {
+            padding:20;
+            margin:20;
+        }
+        table {
+            border-spacing: 0px;
+        }
+        th, td {
+            padding-left: 15px;
+        }
+        th {
+            text-align: left;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            overflow: visible;
+            color: #993333;
+        }
+        a {
+            color: #000099;
+            font-weight:bold;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+  %body
+    #content
+      .wrapper
+        !~~ body
+
+    #footer
+      .wrapper
+        !~~ footer
+
