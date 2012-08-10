@@ -25,7 +25,7 @@ object Webserver extends App {
   val jerseyHolder = new FilterHolder(new SpringServlet)
   val scalateHolder = new FilterHolder(new TemplateEngineFilter)
 
-  jerseyHolder.setInitParameter("com.sun.jersey.config.property.packages", "org.fusesource.scalate.console;dev.example.eventsourcing.server")
+  jerseyHolder.setInitParameter("com.sun.jersey.config.property.packages", "org.fusesource.scalate.console;org.eligosource.eventsourced.example.server")
   jerseyHolder.setInitParameter("com.sun.jersey.config.feature.Trace", "true")
   jerseyHolder.setInitParameter("com.sun.jersey.config.feature.Redirect", "true")
   jerseyHolder.setInitParameter("com.sun.jersey.config.feature.Formatted", "true")
