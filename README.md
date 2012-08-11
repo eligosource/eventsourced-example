@@ -16,6 +16,12 @@ Architecture
 
 ![Architecture](https://raw.github.com/eligosource/eventsourced-example/master/doc/images/invoice-example.png)
 
+### State management
+
+- Command and event-sourced processors manage state via [STM](http://en.wikipedia.org/wiki/Software_transactional_memory) references.
+- For reading current state, services access STM references directly (concurrent reads).
+- For updating current state, services access STM references via processors (actors) where a single STM reference is updated by a single processor ([single-writer-principle](http://mechanical-sympathy.blogspot.de/2011/09/single-writer-principle.html)).
+
 Build
 -----
 
