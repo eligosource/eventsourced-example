@@ -1,5 +1,5 @@
-Info
-----
+Overview
+--------
 
 This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library. Regarding library usage, it demonstrates how to 
 
@@ -10,6 +10,11 @@ This project re-implements [eventsourcing-example](https://github.com/krasserm/e
 - recover from crashes (incl. recovery of business processes)
 
 Compared to the [old implementation](https://github.com/krasserm/eventsourcing-example), the whole service and persistence layer are re-written and domain events are now decoupled from the immutable domain model. The web UI and XML/JSON API remain unchanged and are built on top of [Jersey](http://jersey.java.net/), [Scalate](http://scalate.fusesource.org/) and [JAXB](http://jcp.org/en/jsr/detail?id=222). A [Play](http://www.playframework.org/)-based version will follow (which supports asynchronous responses in contrast to Jersey).
+
+Architecture
+------------
+
+![Architecture](https://raw.github.com/eligosource/eventsourced-example/master/doc/images/invoice-example.png)
 
 Build
 -----

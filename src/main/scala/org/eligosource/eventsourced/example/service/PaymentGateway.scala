@@ -30,7 +30,7 @@ class PaymentGateway(invoiceComponent: Component) extends Actor {
   def receive = {
     case msg: Message => msg.event match {
       case InvoicePaymentRequested(invoiceId, amount, to) => {
-        // don't use a replay channel but acknowledge immediately
+        // don't use a reply channel but acknowledge immediately
         sender ! Ack
 
         // because payments may take several days to arrive ...
