@@ -1,14 +1,32 @@
 Info
 ----
 
-This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library.
+This project re-implements [eventsourcing-example](https://github.com/krasserm/eventsourcing-example) based on the Eligosource [Eventsourced](https://github.com/eligosource/eventsourced) library. Regarding library usage, it demonstrates how to 
+
+- implement command-sourcing (for managing state of invoices)
+- implement event-sourcing (for managing state of payment processes and for recording usage statistics)
+- implement domain services (to handle requests via UI and XML/JSON API)
+- implement business processes (to deal with long-running background activities)
+- recover from crashes (incl. recovery of business processes)
+
+Compared to the [old implementation](https://github.com/krasserm/eventsourcing-example), domain events are now decoupled from the immutable domain model. Web UI and XML/JSON API are built on top of [Jersey](http://jersey.java.net/), [Scalate](http://scalate.fusesource.org/) and [JAXB](http://jcp.org/en/jsr/detail?id=222). A [Play](http://www.playframework.org/)-based version will follow (which supports asynchronous responses in contrast to Jersey).
 
 Run
 ---
 
+First checkout and build the [Eventsourced](https://github.com/eligosource/eventsourced) library
+
+    git clone git://github.com/eligosource/eventsourced.git
+    cd eventsourced
+    sbt publish-local
+
+Then checkout the example application run it 
+
+    git clone git://github.com/eligosource/eventsourced-example.git
+    cd eventsourced-example
     sbt 'run-nobootcp org.eligosource.eventsourced.example.server.Webserver'
 
-Then go to [http://localhost:8080](http://localhost:8080) and create some invoices.
+Finally go to [http://localhost:8080](http://localhost:8080) and create some invoices.
 
 Web API
 -------

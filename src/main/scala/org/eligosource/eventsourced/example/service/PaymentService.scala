@@ -20,6 +20,8 @@ class PaymentService(invoiceComponent: Component) extends Actor {
 
         // because payments may take several days to arrive ...
         Future { invoiceComponent.inputChannel ! Message(InvoicePaymentReceived(invoiceId, amount)) }
+        // here we assume that an external payment service will
+        // retry notifying us should this app be not available
       }
     }
   }
