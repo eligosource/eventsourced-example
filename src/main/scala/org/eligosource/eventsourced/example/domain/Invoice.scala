@@ -170,9 +170,13 @@ case class InvoiceDiscountSet(invoiceId: String, discount: BigDecimal)
 case class InvoiceSent(invoiceId: String, invoice: Invoice, to: InvoiceAddress)
 case class InvoicePaid(invoiceId: String)
 
+case class InvoicePaymentRequested(invoiceId: String, amount: BigDecimal, to: InvoiceAddress)
+case class InvoicePaymentReceived(invoiceId: String, amount: BigDecimal)
+
 // Commands
 case class CreateInvoice(invoiceId: String)
 case class AddInvoiceItem(invoiceId: String, expectedVersion: Option[Long], invoiceItem: InvoiceItem)
 case class SetInvoiceDiscount(invoiceId: String, expectedVersion: Option[Long], discount: BigDecimal)
 case class SendInvoiceTo(invoiceId: String, expectedVersion: Option[Long], to: InvoiceAddress)
-case class PayInvoice(invoiceId: String, expectedVersion: Option[Long], amount: BigDecimal)
+
+

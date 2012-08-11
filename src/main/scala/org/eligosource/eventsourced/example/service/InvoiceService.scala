@@ -60,9 +60,6 @@ class InvoiceService(invoicesRef: Ref[Map[String, Invoice]], invoiceComponent: C
 
   def sendInvoiceTo(invoiceId: String, expectedVersion: Option[Long], to: InvoiceAddress): Future[DomainValidation[SentInvoice]] =
     invoiceComponent.inputProducer ? SendInvoiceTo(invoiceId, expectedVersion, to) map(_.asInstanceOf[DomainValidation[SentInvoice]])
-
-  def payInvoice(invoiceId: String, expectedVersion: Option[Long], amount: BigDecimal): Future[DomainValidation[PaidInvoice]] =
-    invoiceComponent.inputProducer ? PayInvoice(invoiceId, expectedVersion, amount) map(_.asInstanceOf[DomainValidation[PaidInvoice]])
 }
 
 // -------------------------------------------------------------------------------------------------------------
@@ -92,8 +89,8 @@ class InvoiceProcessor(invoicesRef: Ref[Map[String, Invoice]], outputChannels: M
         process(sendInvoiceTo(invoiceId, expectedVersion, to), msg.sender) { invoice =>
           listeners ! msg.copy(event = InvoiceSent(invoiceId, invoice, to))
         }
-      case PayInvoice(invoiceId, expectedVersion, amount) =>
-        process(payInvoice(invoiceId, expectedVersion, amount), msg.sender) { invoice =>
+      case InvoicePaymentReceived(invoiceId, amount) =>
+        process(payInvoice(invoiceId, None, amount), None) { invoice =>
           listeners ! msg.copy(event = InvoicePaid(invoiceId))
         }
 

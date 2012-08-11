@@ -23,16 +23,24 @@ object Appserver {
     val invoicesRef = Ref(Map.empty[String, Invoice])
     val statisticsRef = Ref(Map.empty[String, Int])
 
-    val listenersComponent = Component(2, journal)
-      .setProcessor(outputChannels => system.actorOf(Props(new StatisticsProcessor(statisticsRef))))
-
     val invoiceComponent = Component(1, journal)
+    val listenersComponent = Component(2, journal)
+
+    val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
+    val statisticsService = new StatisticsService(statisticsRef)
+    val paymentService = system.actorOf(Props(new PaymentService(invoiceComponent)))
+
+    listenersComponent
+      .addDefaultOutputChannelToActor("payment", paymentService)
+      .setProcessors(outputChannels => List(
+        system.actorOf(Props(new StatisticsProcessor(statisticsRef))),
+        system.actorOf(Props(new PaymentProcess(outputChannels)))))
+
+    invoiceComponent
       .addDefaultOutputChannelToComponent("listeners", listenersComponent)
       .setProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
 
     Composite.init(invoiceComponent)
 
-    val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
-    val statisticsService = new StatisticsService(statisticsRef)
   }
 }
