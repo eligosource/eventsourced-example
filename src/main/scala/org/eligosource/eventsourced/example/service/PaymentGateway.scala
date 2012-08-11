@@ -22,9 +22,9 @@ import org.eligosource.eventsourced.core._
 import org.eligosource.eventsourced.example.domain._
 
 /**
- * Payment service that interacts with customer to request payment (mocked).
+ * Payment gateway that interacts with customer to request payment (mocked).
  */
-class PaymentService(invoiceComponent: Component) extends Actor {
+class PaymentGateway(invoiceComponent: Component) extends Actor {
   implicit val executor = context.system.dispatcher
 
   def receive = {
@@ -35,8 +35,6 @@ class PaymentService(invoiceComponent: Component) extends Actor {
 
         // because payments may take several days to arrive ...
         Future { invoiceComponent.inputChannel ! Message(InvoicePaymentReceived(invoiceId, amount)) }
-        // here we assume that an external payment service will
-        // retry notifying us should this app be not available
       }
     }
   }

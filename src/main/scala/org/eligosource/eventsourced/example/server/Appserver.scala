@@ -43,10 +43,10 @@ object Appserver {
 
     val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
     val statisticsService = new StatisticsService(statisticsRef)
-    val paymentService = system.actorOf(Props(new PaymentService(invoiceComponent)))
+    val paymentGateway = system.actorOf(Props(new PaymentGateway(invoiceComponent)))
 
     listenersComponent
-      .addDefaultOutputChannelToActor("payment", paymentService)
+      .addDefaultOutputChannelToActor("payment", paymentGateway)
       .setProcessors(outputChannels => List(
         system.actorOf(Props(new StatisticsProcessor(statisticsRef))),
         system.actorOf(Props(new PaymentProcess(outputChannels)))))
