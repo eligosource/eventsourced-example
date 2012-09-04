@@ -46,6 +46,20 @@ To start the example application enter
 
 Finally go to [http://localhost:8080](http://localhost:8080) and create some invoices.
 
+Alternatives
+------------
+
+The steps above describe how to build and run the example on the [master](https://github.com/eligosource/eventsourced-example) branch which uses a [LevelDB](http://code.google.com/p/leveldb/) based journal. Branch [journalio](https://github.com/eligosource/eventsourced-example/tree/journalio) contains the same example using a [Journal.IO](https://github.com/sbtourist/Journal.IO) based journal. To build the Journal.IO based example, checkout branch `journalio`
+
+    git checkout journalio
+
+and run the example with
+
+    sbt 'run org.eligosource.eventsourced.example.server.Webserver'
+
+Here's the [diff](https://github.com/eligosource/eventsourced-example/commit/4fde60d05ed126e74a4701409969804fe806e946) between these two versions.
+
+
 Web API
 -------
 
