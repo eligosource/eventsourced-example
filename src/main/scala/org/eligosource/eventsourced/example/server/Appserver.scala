@@ -20,6 +20,8 @@ import scala.concurrent.stm.Ref
 import akka.actor._
 
 import org.eligosource.eventsourced.core._
+import org.eligosource.eventsourced.journal.LeveldbJournal
+
 import org.eligosource.eventsourced.example.domain.Invoice
 import org.eligosource.eventsourced.example.service._
 
@@ -33,7 +35,7 @@ object Appserver {
     implicit val system = ActorSystem("eventsourced")
 
     val journalDir = new java.io.File("target/journal")
-    val journal = system.actorOf(Props(new Journal(journalDir)))
+    val journal = system.actorOf(Props(new LeveldbJournal(journalDir)))
 
     val invoicesRef = Ref(Map.empty[String, Invoice])
     val statisticsRef = Ref(Map.empty[String, Int])
