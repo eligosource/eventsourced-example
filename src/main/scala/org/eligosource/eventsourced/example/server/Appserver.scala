@@ -35,7 +35,7 @@ object Appserver {
     implicit val system = ActorSystem("eventsourced")
 
     val journalDir = new java.io.File("target/journal")
-    val journal = system.actorOf(Props(new LeveldbJournal(journalDir)))
+    val journal = LeveldbJournal(journalDir)
 
     val invoicesRef = Ref(Map.empty[String, Invoice])
     val statisticsRef = Ref(Map.empty[String, Int])
