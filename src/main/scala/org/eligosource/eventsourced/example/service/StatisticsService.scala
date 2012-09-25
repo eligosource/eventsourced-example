@@ -26,16 +26,13 @@ class StatisticsService(statisticsRef: Ref[Map[String, Int]]) {
   def statistics = statisticsRef.single.get
 }
 
-class StatisticsProcessor(statisticsRef: Ref[Map[String, Int]]) extends Actor {
+class StatisticsProcessor(statisticsRef: Ref[Map[String, Int]]) extends Actor { this: Receiver =>
   def receive = {
-    case msg: Message => msg.event match {
-      case InvoiceItemAdded(id, _) => statisticsRef.single.transform { statistics =>
-        statistics.get(id) match {
-          case Some(count) => statistics + (id -> (count + 1))
-          case None        => statistics + (id -> 1)
-        }
+    case InvoiceItemAdded(id, _) => statisticsRef.single.transform { statistics =>
+      statistics.get(id) match {
+        case Some(count) => statistics + (id -> (count + 1))
+        case None        => statistics + (id -> 1)
       }
-      case _ =>
     }
   }
 }

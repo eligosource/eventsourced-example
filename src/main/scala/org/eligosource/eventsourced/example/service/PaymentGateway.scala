@@ -24,18 +24,13 @@ import org.eligosource.eventsourced.example.domain._
 /**
  * Payment gateway that interacts with customer to request payment (mocked).
  */
-class PaymentGateway(invoiceComponent: Component) extends Actor {
+class PaymentGateway(invoiceProcessor: ActorRef) extends Actor { this: Receiver =>
   implicit val executor = context.system.dispatcher
 
   def receive = {
-    case msg: Message => msg.event match {
-      case InvoicePaymentRequested(invoiceId, amount, to) => {
-        // don't use a reply channel but acknowledge immediately
-        sender ! Ack
-
-        // because payments may take several days to arrive ...
-        Future { invoiceComponent.inputChannel ! Message(InvoicePaymentReceived(invoiceId, amount)) }
-      }
+    case InvoicePaymentRequested(invoiceId, amount, to) => {
+      // payments may take several days to arrive ...
+      Future { invoiceProcessor ! Message(InvoicePaymentReceived(invoiceId, amount)) }
     }
   }
 }
@@ -43,20 +38,17 @@ class PaymentGateway(invoiceComponent: Component) extends Actor {
 /**
  * (Long-running) payment process.
  */
-class PaymentProcess(outputChannels: Map[String, ActorRef]) extends Actor {
+class PaymentProcess extends Actor { this: Emitter =>
   var pendingPayments = Map.empty[String, InvoicePaymentRequested]
 
   def receive = {
-    case msg: Message => msg.event match {
-      case InvoiceSent(invoiceId, invoice, to) => {
-        val outEvent = InvoicePaymentRequested(invoiceId, invoice.getTotal, to)
-        outputChannels("payment") ! msg.copy(event = outEvent)
-        pendingPayments = pendingPayments + (invoiceId -> outEvent)
-      }
-      case InvoicePaid(invoiceId) => {
-        pendingPayments = pendingPayments - invoiceId
-      }
-      case _ =>
+    case InvoiceSent(invoiceId, invoice, to) => {
+      val outEvent = InvoicePaymentRequested(invoiceId, invoice.getTotal, to)
+      emitter("payment") sendEvent outEvent
+      pendingPayments = pendingPayments + (invoiceId -> outEvent)
+    }
+    case InvoicePaid(invoiceId) => {
+      pendingPayments = pendingPayments - invoiceId
     }
   }
 }

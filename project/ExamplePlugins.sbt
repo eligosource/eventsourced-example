@@ -1,1 +1,1 @@
-libraryDependencies <+= sbtVersion(v => "com.mojolly.scalate" %% "xsbt-scalate-generator" % (v + "-0.1.6"))
+addSbtPlugin("com.mojolly.scalate" % "xsbt-scalate-generator" % "0.2.2")

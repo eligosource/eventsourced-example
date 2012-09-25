@@ -29,7 +29,7 @@ import org.eligosource.eventsourced.example.domain._
 import scalaz._
 import Scalaz._
 
-class InvoiceService(invoicesRef: Ref[Map[String, Invoice]], invoiceComponent: Component) {
+class InvoiceService(invoicesRef: Ref[Map[String, Invoice]], invoiceProcessor: ActorRef)(implicit system: ActorSystem) {
 
   //
   // Consistent reads
@@ -50,61 +50,54 @@ class InvoiceService(invoicesRef: Ref[Map[String, Invoice]], invoiceComponent: C
   implicit val timeout = Timeout(5 seconds)
 
   def createInvoice(invoiceId: String): Future[DomainValidation[DraftInvoice]] =
-    invoiceComponent.inputProducer ? CreateInvoice(invoiceId) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
+    invoiceProcessor ? Message(CreateInvoice(invoiceId)) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
 
   def addInvoiceItem(invoiceId: String, expectedVersion: Option[Long], invoiceItem: InvoiceItem): Future[DomainValidation[DraftInvoice]] =
-    invoiceComponent.inputProducer ? AddInvoiceItem(invoiceId, expectedVersion, invoiceItem) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
+    invoiceProcessor ? Message(AddInvoiceItem(invoiceId, expectedVersion, invoiceItem)) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
 
   def setInvoiceDiscount(invoiceId: String, expectedVersion: Option[Long], discount: BigDecimal): Future[DomainValidation[DraftInvoice]] =
-    invoiceComponent.inputProducer ? SetInvoiceDiscount(invoiceId, expectedVersion, discount) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
+    invoiceProcessor ? Message(SetInvoiceDiscount(invoiceId, expectedVersion, discount)) map(_.asInstanceOf[DomainValidation[DraftInvoice]])
 
   def sendInvoiceTo(invoiceId: String, expectedVersion: Option[Long], to: InvoiceAddress): Future[DomainValidation[SentInvoice]] =
-    invoiceComponent.inputProducer ? SendInvoiceTo(invoiceId, expectedVersion, to) map(_.asInstanceOf[DomainValidation[SentInvoice]])
+    invoiceProcessor ? Message(SendInvoiceTo(invoiceId, expectedVersion, to)) map(_.asInstanceOf[DomainValidation[SentInvoice]])
 }
 
 // -------------------------------------------------------------------------------------------------------------
 //  InvoiceProcessor is single writer to invoicesRef, so we can have reads and writes in separate transactions
 // -------------------------------------------------------------------------------------------------------------
 
-class InvoiceProcessor(invoicesRef: Ref[Map[String, Invoice]], outputChannels: Map[String, ActorRef]) extends Actor {
+class InvoiceProcessor(invoicesRef: Ref[Map[String, Invoice]]) extends Actor { this: Emitter =>
   import InvoiceProcessor._
 
-  val listeners = outputChannels("listeners")
-
   def receive = {
-    case msg: Message => msg.event match {
-      case CreateInvoice(invoiceId) =>
-        process(createInvoice(invoiceId), msg.sender) { invoice =>
-          listeners ! msg.copy(event = InvoiceCreated(invoiceId))
-        }
-      case AddInvoiceItem(invoiceId, expectedVersion, invoiceItem) =>
-        process(addInvoiceItem(invoiceId, expectedVersion, invoiceItem), msg.sender) { invoice =>
-          listeners ! msg.copy(event = InvoiceItemAdded(invoiceId, invoiceItem))
-        }
-      case SetInvoiceDiscount(invoiceId, expectedVersion, discount) =>
-        process(setInvoiceDiscount(invoiceId, expectedVersion, discount), msg.sender) { invoice =>
-          listeners ! msg.copy(event = InvoiceDiscountSet(invoiceId, discount))
-        }
-      case SendInvoiceTo(invoiceId, expectedVersion, to) =>
-        process(sendInvoiceTo(invoiceId, expectedVersion, to), msg.sender) { invoice =>
-          listeners ! msg.copy(event = InvoiceSent(invoiceId, invoice, to))
-        }
-      case InvoicePaymentReceived(invoiceId, amount) =>
-        process(payInvoice(invoiceId, None, amount), None) { invoice =>
-          listeners ! msg.copy(event = InvoicePaid(invoiceId))
-        }
-
-    }
+    case CreateInvoice(invoiceId) =>
+      process(createInvoice(invoiceId)) { invoice =>
+        emitter("listeners") sendEvent InvoiceCreated(invoiceId)
+      }
+    case AddInvoiceItem(invoiceId, expectedVersion, invoiceItem) =>
+      process(addInvoiceItem(invoiceId, expectedVersion, invoiceItem)) { invoice =>
+        emitter("listeners") sendEvent InvoiceItemAdded(invoiceId, invoiceItem)
+      }
+    case SetInvoiceDiscount(invoiceId, expectedVersion, discount) =>
+      process(setInvoiceDiscount(invoiceId, expectedVersion, discount)) { invoice =>
+        emitter("listeners") sendEvent InvoiceDiscountSet(invoiceId, discount)
+      }
+    case SendInvoiceTo(invoiceId, expectedVersion, to) =>
+      process(sendInvoiceTo(invoiceId, expectedVersion, to)) { invoice =>
+        emitter("listeners") sendEvent InvoiceSent(invoiceId, invoice, to)
+      }
+    case InvoicePaymentReceived(invoiceId, amount) =>
+      process(payInvoice(invoiceId, None, amount)) { invoice =>
+        emitter("listeners") sendEvent InvoicePaid(invoiceId)
+      }
   }
 
-  def process(validation: DomainValidation[Invoice], sender: Option[ActorRef])(onSuccess: Invoice => Unit) = {
+  def process(validation: DomainValidation[Invoice])(onSuccess: Invoice => Unit) = {
     validation.foreach { invoice =>
       updateInvoices(invoice)
       onSuccess(invoice)
     }
-    sender.foreach { sender =>
-      sender ! validation
-    }
+    sender ! validation
   }
 
   def createInvoice(invoiceId: String): DomainValidation[DraftInvoice] = {

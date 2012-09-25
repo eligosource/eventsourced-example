@@ -17,6 +17,8 @@ package org.eligosource.eventsourced.example.server
 
 import scala.concurrent.stm.Ref
 
+import java.io.File
+
 import akka.actor._
 
 import org.eligosource.eventsourced.core._
@@ -34,30 +36,27 @@ object Appserver {
   def boot(): Appserver = new Appserver {
     implicit val system = ActorSystem("eventsourced")
 
-    val journalDir = new java.io.File("target/journal")
-    val journal = LeveldbJournal(journalDir)
+    val journal = LeveldbJournal(new File("target/journal"))
+    val extension = EventsourcingExtension(system, journal)
 
     val invoicesRef = Ref(Map.empty[String, Invoice])
     val statisticsRef = Ref(Map.empty[String, Int])
 
-    val invoiceComponent = Component(1, journal)
-    val listenersComponent = Component(2, journal)
+    val multicastTargets = List(
+      system.actorOf(Props(new StatisticsProcessor(statisticsRef) with Receiver)),
+      system.actorOf(Props(new PaymentProcess with Emitter)))
 
-    val invoiceService = new InvoiceService(invoicesRef, invoiceComponent)
+    val invoiceProcessor = extension.processorOf(Props(new InvoiceProcessor(invoicesRef) with Emitter with Eventsourced { val id = 1 } ))
+    val multicastProcessor = extension.processorOf(Props(new Multicast(multicastTargets, identity) with Confirm with Eventsourced { val id = 2 }))
+
+    val paymentGateway = system.actorOf(Props(new PaymentGateway(invoiceProcessor) with Receiver with Confirm))
+
+    extension.channelOf(DefaultChannelProps(1, paymentGateway).withName("payment"))
+    extension.channelOf(DefaultChannelProps(2, multicastProcessor).withName("listeners"))
+
+    extension.recover()
+
+    val invoiceService = new InvoiceService(invoicesRef, invoiceProcessor)
     val statisticsService = new StatisticsService(statisticsRef)
-    val paymentGateway = system.actorOf(Props(new PaymentGateway(invoiceComponent)))
-
-    listenersComponent
-      .addDefaultOutputChannelToActor("payment", paymentGateway)
-      .setProcessors(outputChannels => List(
-        system.actorOf(Props(new StatisticsProcessor(statisticsRef))),
-        system.actorOf(Props(new PaymentProcess(outputChannels)))))
-
-    invoiceComponent
-      .addDefaultOutputChannelToComponent("listeners", listenersComponent)
-      .setProcessor(outputChannels => system.actorOf(Props(new InvoiceProcessor(invoicesRef, outputChannels))))
-
-    Composite.init(invoiceComponent)
-
   }
 }

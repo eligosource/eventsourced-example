@@ -4,6 +4,7 @@ import sbt._
 import Keys._
 
 import com.mojolly.scalate.ScalatePlugin._
+import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 
 object BuildSettings {
   val buildOrganization = "dev.example"
@@ -28,7 +29,7 @@ object Resolvers {
 }
 
 object Versions {
-  val Akka   = "2.0.2"
+  val Akka   = "2.0.3"
   val Jersey = "1.9.1"
   val Jetty  = "8.0.4.v20111024"
   val Spring = "3.1.0.RELEASE"
