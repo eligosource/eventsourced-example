@@ -24,7 +24,7 @@ import org.eligosource.eventsourced.example.domain._
 /**
  * Payment gateway that interacts with customer to request payment (mocked).
  */
-class PaymentGateway(invoiceProcessor: ActorRef) extends Actor { this: Receiver =>
+class PaymentGateway(invoiceProcessor: ActorRef) extends Actor {
   implicit val executor = context.system.dispatcher
 
   def receive = {
