@@ -40,7 +40,6 @@ object Dependencies {
 
   // compile dependencies
   lazy val akkaActor    = "com.typesafe.akka"          % "akka-actor"        % Akka           % "compile"
-  lazy val akkaAgent    = "com.typesafe.akka"          % "akka-agent"        % Akka           % "compile"
   lazy val jsr311       = "javax.ws.rs"                % "jsr311-api"        % "1.1.1"        % "compile"
   lazy val jerseyCore   = "com.sun.jersey"             % "jersey-core"       % Jersey         % "compile"
   lazy val jerseyJson   = "com.sun.jersey"             % "jersey-json"       % Jersey         % "compile"
@@ -48,6 +47,7 @@ object Dependencies {
   lazy val jerseySpring = "com.sun.jersey.contribs"    % "jersey-spring"     % Jersey         % "compile"
   lazy val eventsourced = "org.eligosource"           %% "eventsourced"      % "0.4-SNAPSHOT" % "compile"
   lazy val scalate      = "org.fusesource.scalate"     % "scalate-core"      % "1.5.2"        % "compile"
+  lazy val scalaStm     = "org.scala-tools"           %% "scala-stm"         % "0.5"          % "compile"
   lazy val scalaz       = "org.scalaz"                %% "scalaz-core"       % "6.0.4"        % "compile"
   lazy val springWeb    = "org.springframework"        % "spring-web"        % Spring         % "compile"
 
@@ -75,7 +75,7 @@ object ExampleBuild extends Build {
     settings = buildSettings ++ templateSettings ++ Seq (
       resolvers            := Seq (typesafeRepo),
       // compile dependencies (backend)
-      libraryDependencies ++= Seq (akkaActor, akkaAgent, eventsourced, scalaz),
+      libraryDependencies ++= Seq (akkaActor, scalaStm, eventsourced, scalaz),
       // compile dependencies (frontend)
       libraryDependencies ++= Seq (jsr311, jerseyCore, jerseyJson, jerseyServer, jerseySpring, springWeb, scalate),
       // container dependencies
@@ -101,7 +101,7 @@ object ExampleBuild extends Build {
       val runCp = cp.map(_.data).mkString(java.io.File.pathSeparator)
       val runOpts = Seq("-classpath", runCp) ++ at
       val result = Fork.java.fork(None, runOpts, None, Map(), false, StdoutOutput).exitValue()
-      if (result != 0) error("Run failed")
+      if (result != 0) sys.error("Run failed")
     }
   }
 }
