@@ -25,7 +25,12 @@ object TemplateSettings {
 }
 
 object Resolvers {
-  val typesafeRepo  = "Typesafe Repo"   at "http://repo.typesafe.com/typesafe/releases/"
+  val typesafeRepo = "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases/"
+
+  val eligosourceReleasesRepo  =
+    "Eligosource Releases Repo" at "http://repo.eligotech.com/nexus/content/repositories/eligosource-releases/"
+  val eligosourceSnapshotsRepo =
+    "Eligosource Snapshots Repo" at "http://repo.eligotech.com/nexus/content/repositories/eligosource-snapshots/"
 }
 
 object Versions {
@@ -73,7 +78,7 @@ object ExampleBuild extends Build {
     "eventsourced-example",
     file("."),
     settings = buildSettings ++ templateSettings ++ Seq (
-      resolvers            := Seq (typesafeRepo),
+      resolvers            := Seq (typesafeRepo, eligosourceReleasesRepo, eligosourceSnapshotsRepo),
       // compile dependencies (backend)
       libraryDependencies ++= Seq (akkaActor, scalaStm, eventsourced, scalaz),
       // compile dependencies (frontend)
