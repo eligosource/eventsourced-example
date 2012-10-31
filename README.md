@@ -30,13 +30,7 @@ Legend:
 Build
 -----
 
-First checkout, build and publish the [Eventsourced](https://github.com/eligosource/eventsourced) library to Ivy cache.
-
-    git clone git://github.com/eligosource/eventsourced.git
-    cd eventsourced
-    sbt publish-local
-
-Then checkout the example application and compile it
+Clone the example application and compile it
 
     git clone git://github.com/eligosource/eventsourced-example.git
     cd eventsourced-example

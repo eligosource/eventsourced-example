@@ -8,7 +8,7 @@ import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 
 object BuildSettings {
   val buildOrganization = "dev.example"
-  val buildVersion      = "0.1-SNAPSHOT"
+  val buildVersion      = "0.4-SNAPSHOT"
   val buildScalaVersion = "2.9.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
