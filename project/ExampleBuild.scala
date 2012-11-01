@@ -8,7 +8,7 @@ import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 
 object BuildSettings {
   val buildOrganization = "dev.example"
-  val buildVersion      = "0.4-SNAPSHOT"
+  val buildVersion      = "0.4.0"
   val buildScalaVersion = "2.9.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
@@ -50,7 +50,7 @@ object Dependencies {
   lazy val jerseyJson   = "com.sun.jersey"             % "jersey-json"       % Jersey         % "compile"
   lazy val jerseyServer = "com.sun.jersey"             % "jersey-server"     % Jersey         % "compile"
   lazy val jerseySpring = "com.sun.jersey.contribs"    % "jersey-spring"     % Jersey         % "compile"
-  lazy val eventsourced = "org.eligosource"           %% "eventsourced"      % "0.4-SNAPSHOT" % "compile"
+  lazy val eventsourced = "org.eligosource"           %% "eventsourced"      % "0.4.0"        % "compile"
   lazy val scalate      = "org.fusesource.scalate"     % "scalate-core"      % "1.5.2"        % "compile"
   lazy val scalaStm     = "org.scala-tools"           %% "scala-stm"         % "0.5"          % "compile"
   lazy val scalaz       = "org.scalaz"                %% "scalaz-core"       % "6.0.4"        % "compile"
