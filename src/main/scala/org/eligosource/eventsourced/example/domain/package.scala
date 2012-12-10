@@ -18,8 +18,8 @@ package org.eligosource.eventsourced.example
 import scalaz.Validation
 
 package object domain {
-  type DomainValidation[+α] = ({type λ[α]=Validation[DomainError, α]})#λ[α]
-  type DomainError          = List[String]
+  type DomainValidation[A] = Validation[DomainError, A]
+  type DomainError         = List[String]
 
   object DomainError {
     def apply(msg: String): DomainError = List(msg)
