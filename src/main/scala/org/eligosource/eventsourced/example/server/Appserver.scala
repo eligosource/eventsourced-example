@@ -49,8 +49,8 @@ object Appserver {
       system.actorOf(Props(new StatisticsProcessor(statisticsRef) with Receiver)),
       system.actorOf(Props(new PaymentProcess with Emitter)))
 
-    val invoiceProcessor = extension.processorOf(Props(new InvoiceProcessor(invoicesRef) with Emitter with Eventsourced { val id = 1 } ))
-    val multicastProcessor = extension.processorOf(Props(new Multicast(multicastTargets, identity) with Confirm with Eventsourced { val id = 2 }))
+    val invoiceProcessor = extension.processorOf(ProcessorProps(1, pid => new InvoiceProcessor(invoicesRef) with Emitter with Eventsourced { val id = pid } ))
+    val multicastProcessor = extension.processorOf(ProcessorProps(2, pid => new Multicast(multicastTargets, identity) with Confirm with Eventsourced { val id = pid }))
 
     val paymentGateway = system.actorOf(Props(new PaymentGateway(invoiceProcessor) with Receiver with Confirm))
 
