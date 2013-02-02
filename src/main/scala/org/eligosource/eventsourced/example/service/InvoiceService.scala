@@ -15,12 +15,12 @@
  */
 package org.eligosource.eventsourced.example.service
 
+import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.stm.Ref
 
 import akka.actor._
 import akka.pattern.ask
-import akka.dispatch._
-import akka.util.duration._
 import akka.util.Timeout
 
 import org.eligosource.eventsourced.core._
@@ -30,6 +30,7 @@ import scalaz._
 import Scalaz._
 
 class InvoiceService(invoicesRef: Ref[Map[String, Invoice]], invoiceProcessor: ActorRef)(implicit system: ActorSystem) {
+  import system.dispatcher
 
   //
   // Consistent reads

@@ -15,8 +15,9 @@
  */
 package org.eligosource.eventsourced.example.service
 
+import scala.concurrent.Future
+
 import akka.actor._
-import akka.dispatch.Future
 
 import org.eligosource.eventsourced.core._
 import org.eligosource.eventsourced.example.domain._

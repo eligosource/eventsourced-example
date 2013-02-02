@@ -9,7 +9,7 @@ import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 object BuildSettings {
   val buildOrganization = "dev.example"
   val buildVersion      = "0.5-SNAPSHOT"
-  val buildScalaVersion = "2.9.2"
+  val buildScalaVersion = "2.10.0"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization := buildOrganization,
@@ -20,7 +20,7 @@ object BuildSettings {
 
 object TemplateSettings {
   val templateSettings = scalateSettings ++ Seq(
-    scalateTemplateDirectory.in(Compile) := new File("src/main/webapp/WEB-INF")
+    scalateTemplateConfig.in(Compile) := Seq(TemplateConfig(new File("src/main/webapp/WEB-INF"), Nil, Nil, Some("")))
   )
 }
 
@@ -34,7 +34,7 @@ object Resolvers {
 }
 
 object Versions {
-  val Akka   = "2.0.3"
+  val Akka   = "2.1.0"
   val Jersey = "1.9.1"
   val Jetty  = "8.0.4.v20111024"
   val Spring = "3.1.0.RELEASE"
@@ -44,15 +44,15 @@ object Dependencies {
   import Versions._
 
   // compile dependencies
-  lazy val akkaActor    = "com.typesafe.akka"          % "akka-actor"        % Akka           % "compile"
+  lazy val akkaActor    = "com.typesafe.akka"         %% "akka-actor"        % Akka           % "compile"
   lazy val jsr311       = "javax.ws.rs"                % "jsr311-api"        % "1.1.1"        % "compile"
   lazy val jerseyCore   = "com.sun.jersey"             % "jersey-core"       % Jersey         % "compile"
   lazy val jerseyJson   = "com.sun.jersey"             % "jersey-json"       % Jersey         % "compile"
   lazy val jerseyServer = "com.sun.jersey"             % "jersey-server"     % Jersey         % "compile"
   lazy val jerseySpring = "com.sun.jersey.contribs"    % "jersey-spring"     % Jersey         % "compile"
-  lazy val eventsourced = "org.eligosource"           %% "eventsourced"      % "0.4.1"        % "compile"
-  lazy val scalate      = "org.fusesource.scalate"     % "scalate-core"      % "1.5.2"        % "compile"
-  lazy val scalaStm     = "org.scala-tools"           %% "scala-stm"         % "0.5"          % "compile"
+  lazy val eventsourced = "org.eligosource"           %% "eventsourced"      % "0.5-SNAPSHOT" % "compile"
+  lazy val scalate      = "org.fusesource.scalate"    %% "scalate-core"      % "1.6.1"        % "compile"
+  lazy val scalaStm     = "org.scala-stm"             %% "scala-stm"         % "0.7"          % "compile"
   lazy val scalaz       = "org.scalaz"                %% "scalaz-core"       % "6.0.4"        % "compile"
   lazy val springWeb    = "org.springframework"        % "spring-web"        % Spring         % "compile"
 
@@ -65,7 +65,7 @@ object Dependencies {
   lazy val configgy  = "net.lag" % "configgy" % "2.0.0" % "runtime"
 
   // test dependencies
-  lazy val scalatest = "org.scalatest" %% "scalatest" % "1.8" % "test"
+  lazy val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 }
 
 object ExampleBuild extends Build {

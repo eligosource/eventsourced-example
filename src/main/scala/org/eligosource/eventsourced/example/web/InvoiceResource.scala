@@ -15,12 +15,12 @@
  */
 package org.eligosource.eventsourced.example.web
 
+import scala.concurrent._
+import scala.concurrent.duration._
+
 import javax.annotation.Resource
 import javax.ws.rs._
 import javax.ws.rs.core.MediaType._
-
-import akka.dispatch.Await
-import akka.util.duration._
 
 import scalaz._
 import Scalaz._

@@ -15,12 +15,12 @@
  */
 package org.eligosource.eventsourced.example.server
 
+import scala.concurrent.duration._
 import scala.concurrent.stm.Ref
 
 import java.io.File
 
 import akka.actor._
-import akka.util.duration._
 import akka.util.Timeout
 
 import org.eligosource.eventsourced.core._
@@ -56,12 +56,7 @@ object Appserver {
 
     extension.channelOf(DefaultChannelProps(1, paymentGateway).withName("payment"))
     extension.channelOf(DefaultChannelProps(2, multicastProcessor).withName("listeners"))
-
-    extension.recover()
-    // wait for processor 1 to complete processing of replayed event messages
-    // (ensures that recovery of externally visible state maintained by
-    //  invoicesRef is completed when awaitProcessorCompletion returns)
-    extension.awaitProcessorCompletion(Set(1))
+    extension.recover(10 seconds)
 
     val invoiceService = new InvoiceService(invoicesRef, invoiceProcessor)
     val statisticsService = new StatisticsService(statisticsRef)
