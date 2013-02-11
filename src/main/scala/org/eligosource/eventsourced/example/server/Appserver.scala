@@ -24,7 +24,7 @@ import akka.actor._
 import akka.util.Timeout
 
 import org.eligosource.eventsourced.core._
-import org.eligosource.eventsourced.journal.LeveldbJournal
+import org.eligosource.eventsourced.journal.leveldb.LeveldbJournal
 
 import org.eligosource.eventsourced.example.domain.Invoice
 import org.eligosource.eventsourced.example.service._
