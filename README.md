@@ -41,7 +41,7 @@ Run
 
 To start the example application run
 
-    sbt 'run-nobootcp org.eligosource.eventsourced.example.server.Webserver'
+    sbt 'run-main org.eligosource.eventsourced.example.server.Webserver'
 
 Then go to [http://localhost:8080](http://localhost:8080) and create some invoices. 
 

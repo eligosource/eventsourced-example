@@ -24,7 +24,7 @@ import akka.actor._
 import akka.util.Timeout
 
 import org.eligosource.eventsourced.core._
-import org.eligosource.eventsourced.journal.leveldb.LeveldbJournal
+import org.eligosource.eventsourced.journal.leveldb.LeveldbJournalProps
 
 import org.eligosource.eventsourced.example.domain.Invoice
 import org.eligosource.eventsourced.example.service._
@@ -39,7 +39,7 @@ object Appserver {
     implicit val system = ActorSystem("eventsourced")
     implicit val timeout = Timeout(10 seconds)
 
-    val journal = LeveldbJournal(new File("target/journal"))
+    val journal = LeveldbJournalProps(new File("target/journal"), native = false).createJournal
     val extension = EventsourcingExtension(system, journal)
 
     val invoicesRef = Ref(Map.empty[String, Invoice])

@@ -8,7 +8,7 @@ import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 
 object BuildSettings {
   val buildOrganization = "dev.example"
-  val buildVersion      = "0.5-SNAPSHOT"
+  val buildVersion      = "0.6-SNAPSHOT"
   val buildScalaVersion = "2.10.0"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
@@ -55,8 +55,8 @@ object Dependencies {
   lazy val scalaz       = "org.scalaz"              %% "scalaz-core"   % "6.0.4" % "compile"
   lazy val springWeb    = "org.springframework"      % "spring-web"    % Spring  % "compile"
 
-  lazy val esCore    = "org.eligosource" %% "eventsourced-core"            % "0.5-SNAPSHOT" % "compile"
-  lazy val esJournal = "org.eligosource" %% "eventsourced-journal-leveldb" % "0.5-SNAPSHOT" % "compile"
+  lazy val esCore    = "org.eligosource" %% "eventsourced-core"            % "0.6-SNAPSHOT" % "compile"
+  lazy val esJournal = "org.eligosource" %% "eventsourced-journal-leveldb" % "0.6-SNAPSHOT" % "compile"
 
   // container dependencies TODO: switch from "compile" to "container" when using xsbt-web-plugin
   lazy val jettyServer  = "org.eclipse.jetty" % "jetty-server"  % Jetty % "compile"
