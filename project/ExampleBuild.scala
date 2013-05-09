@@ -8,7 +8,7 @@ import com.mojolly.scalate.ScalatePlugin.ScalateKeys._
 
 object BuildSettings {
   val buildOrganization = "dev.example"
-  val buildVersion      = "0.5-SNAPSHOT"
+  val buildVersion      = "0.5.0"
   val buildScalaVersion = "2.10.0"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
@@ -29,8 +29,6 @@ object Resolvers {
 
   val eligosourceReleasesRepo  =
     "Eligosource Releases Repo" at "http://repo.eligotech.com/nexus/content/repositories/eligosource-releases/"
-  val eligosourceSnapshotsRepo =
-    "Eligosource Snapshots Repo" at "http://repo.eligotech.com/nexus/content/repositories/eligosource-snapshots/"
 }
 
 object Versions {
@@ -55,8 +53,8 @@ object Dependencies {
   lazy val scalaz       = "org.scalaz"              %% "scalaz-core"   % "6.0.4" % "compile"
   lazy val springWeb    = "org.springframework"      % "spring-web"    % Spring  % "compile"
 
-  lazy val esCore    = "org.eligosource" %% "eventsourced-core"            % "0.5-SNAPSHOT" % "compile"
-  lazy val esJournal = "org.eligosource" %% "eventsourced-journal-leveldb" % "0.5-SNAPSHOT" % "compile"
+  lazy val esCore    = "org.eligosource" %% "eventsourced-core"            % "0.5.0" % "compile"
+  lazy val esJournal = "org.eligosource" %% "eventsourced-journal-leveldb" % "0.5.0" % "compile"
 
   // container dependencies TODO: switch from "compile" to "container" when using xsbt-web-plugin
   lazy val jettyServer  = "org.eclipse.jetty" % "jetty-server"  % Jetty % "compile"
@@ -80,7 +78,7 @@ object ExampleBuild extends Build {
     "eventsourced-example",
     file("."),
     settings = buildSettings ++ templateSettings ++ Seq (
-      resolvers            := Seq (typesafeRepo, eligosourceReleasesRepo, eligosourceSnapshotsRepo),
+      resolvers            := Seq (typesafeRepo, eligosourceReleasesRepo),
       // compile dependencies (backend)
       libraryDependencies ++= Seq (akkaActor, scalaStm, esCore, esJournal, scalaz),
       // compile dependencies (frontend)
