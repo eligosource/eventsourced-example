@@ -39,11 +39,11 @@ Clone the example application and compile it
 Run
 ---
 
-To start the example application run
+To start the example application, enter
 
-    sbt 'run-main org.eligosource.eventsourced.example.server.Webserver'
+    > run-main org.eligosource.eventsourced.example.server.Webserver
 
-Then go to [http://localhost:8080](http://localhost:8080) and create some invoices. 
+at the sbt prompt. Then go to [http://localhost:8080](http://localhost:8080) and create some invoices.
 
 … 
 
